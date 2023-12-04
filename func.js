@@ -1,179 +1,164 @@
-//get all needed elements from document 
-var sub = document.getElementById("sub");
-var page = document.getElementById("page");
-var barcode = document.getElementById("code");
-var quan = document.getElementById("quan");
-//copy over objects
-var products = {
-    "689145740844": {
-        name: "JavaScript Textbook",
-        price: 34.95
+const questions = [
+    {
+      q: "When was \"The Outsiders\" released?",
+      answers: [
+        { ans: "1983", corr: true },
+        { ans: "2023", corr: false },
+        { ans: "1503", corr: false },
+        { ans: "1985", corr: false }
+      ]
     },
-    "551943":{
-        name: "Emily",
-        price: 0.01
+    {
+      q: "When was \"Excalibur\" released?",
+      answers: [
+        { ans: "1983", corr: false },
+        { ans: "2023", corr: false },
+        { ans: "1981", corr: true },
+        { ans: "1985", corr: false }
+      ]
     },
-    "4549292070248": {
-        name: "Xerox Paper",
-        price: 10.99
+    {
+      q: "When was \"The Hunger Games: The Ballad of Songbirds & Snakes\" released?",
+      answers: [
+        { ans: "1983", corr: false },
+        { ans: "2023", corr: true },
+        { ans: "1981", corr: false },
+        { ans: "1985", corr: false }
+      ]
     },
-    "092265222983": {
-        name: "First Aid Kit",
-        price: 20.99
+    {
+        q: "When was \"Legally Blonde\" released?",
+        answers: [
+          { ans: "2001", corr: true },
+          { ans: "2002", corr: false },
+          { ans: "2003", corr: false },
+          { ans: "2004", corr: false }
+        ]
     },
-    "X002ELVL3J": {
-        name: "Box of Pencils (50ct.)",
-        price: 15.99
+    {
+        q: "When was \"13 Going On 30\" released?",
+        answers: [
+          { ans: "2001", corr: false },
+          { ans: "2002", corr: false },
+          { ans: "2003", corr: false },
+          { ans: "2004", corr: true }
+        ]
     },
-    "686024002468": {
-        name: "Sanitizing Wipes",
-        price: 10.99
+    {
+        q: "When was \"Spirit\" released?",
+        answers: [
+          { ans: "2001", corr: false },
+          { ans: "2002", corr: true },
+          { ans: "2003", corr: false },
+          { ans: "2004", corr: false }
+        ]
     },
-    "860004186236": {
-        name: "N95 Face Masks",
-        price: 15.99
+    {
+        q: "When was \"Freaky Friday\" released?",
+        answers: [
+          { ans: "2001", corr: false },
+          { ans: "2002", corr: false },
+          { ans: "2003", corr: true },
+          { ans: "2004", corr: false }
+        ]
     },
-    "036000214000": {
-        name: "Kleenex",
-        price: 3.99
+    {
+        q: "When was \"Allegiant\" released?",
+        answers: [
+          { ans: "2010", corr: false },
+          { ans: "2022", corr: false },
+          { ans: "2003", corr: false },
+          { ans: "2016", corr: true }
+        ]
     },
-    "8809693254156": {
-        name: "Hand Sanitizer",
-        price: 7.99
+    {
+        q: "When was \"Shutter Island\" released?",
+        answers: [
+          { ans: "2010", corr: true },
+          { ans: "2022", corr: false },
+          { ans: "2003", corr: false },
+          { ans: "2016", corr: false }
+        ]
     },
-    "036500060480": {
-        name: "Printer Paper",
-        price: 9.99
-    },
-    "085014561877": {
-        name: "Brush Pens",
-        price: 10.99
-    },
-    "X0032YGP2T": {
-        name: "Multiport Adapter",
-        price: 25.99
-    },
-    "B07G6JT1XS": {
-        name: "Scissors (20ct.)",
-        price: 23.99
-    },
-    "9780134682334": {
-        name: "iOS Programming Textbook",
-        price: 119.99
-    },
-    "718103230759": {
-        name: "Spiral Notebook",
-        price: 1.99
+    {
+      q: "When was \"Clue\" released?",
+      answers: [
+        { ans: "1983", corr: false },
+        { ans: "2023", corr: false },
+        { ans: "1981", corr: false },
+        { ans: "1985", corr: true }
+      ]
     }
-};
+  ];
 
-function getProduct(code) {
-    let product = products[code];
-    if (product) {
-        return product;
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+
+function loadQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    console.log("loadQuestion executed");
+    document.getElementById("q").textContent = currentQuestion.q;
+    document.getElementById("opt1").textContent = currentQuestion.answers[0].ans;
+    document.getElementById("opt2").textContent = currentQuestion.answers[1].ans;
+    document.getElementById("opt3").textContent = currentQuestion.answers[2].ans;
+    document.getElementById("opt4").textContent = currentQuestion.answers[3].ans;
+
+    enableOptions(); // Move this line to set up event listeners after updating content
+}
+
+
+function checkAnswer(questionIndex, selectedOptionIndex) {
+    console.log("checkAnswer executed");
+    const selectedAnswer = questions[questionIndex].answers[selectedOptionIndex];
+    if (selectedAnswer.corr) {
+        correctAnswers++;
     } else {
-        return { name: "Product not found", price: 0.0 };
+        wrongAnswers++;
+        document.getElementById("try-again").style.display = "block";
     }
+    
+    document.getElementById("next-btn").style.display = "block";
+
+    disableOptions();
 }
 
-//initialize add and total to create display details the first time and keep track of total
-var add = 0;
-var total = 0;
-var items = [];
+function disableOptions() {
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+        option.onclick = null; // Disable click event on options after an answer is selected
+    });
+}
 
-function addItem(){
-    if(add === 0){//initial display(all titles)
-        var hr = document.createElement("hr");
-        page.appendChild(hr);
-        head = document.createElement("h3");
-        head.innerText = "Cart";
-        page.appendChild(head); // added line + cart title
-        //add headings
-        cart = document.createElement("div");
-        item = document.createElement("h4");
-        price = document.createElement("h4");
-        quantity = document.createElement("h4");
-        item.innerText = "Item";
-        price.innerText = "Price";
-        quantity.innerText = "Quantity";
-        cart.appendChild(item);
-        cart.appendChild(price);
-        cart.appendChild(quantity);
-        cart.classList.add("cart");
-        page.appendChild(cart);
-        reciept = document.createElement("div");
-        page.appendChild(reciept);
-    }
-    var obj = getProduct(barcode.value);
-    obj.quan = parseInt(quan.value); // Parse quantity as an integer
-    //find if obj alread an item or not
-    var existingItem = items.find(item => item.name === obj.name);
+function nextQuestion() {
+    console.log("nextQuestion executed");
+    document.getElementById("try-again").style.display = "none";
+    document.getElementById("next-btn").style.display = "none";
 
-    if (existingItem) {
-        //if exists, just update previous display
-        existingItem.quan += obj.quan;
-        updateDisplay(existingItem);
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+        enableOptions();
     } else {
-        // If the item doesn't exist, add it to the items array
-        items.push(obj);
-
-        // Create a new display entry (thing) only for new items
-        total += obj.price * obj.quan;
-
-        var thing = document.createElement("div");
-        var what = document.createElement("p");
-        var howMuch = document.createElement("p");
-        var quant = document.createElement("p");
-
-        what.innerText = obj.name;
-        howMuch.innerText = obj.price;
-        quant.innerText = obj.quan;
-
-        thing.appendChild(what);
-        thing.appendChild(howMuch);
-        thing.appendChild(quant);
-        thing.classList.add("item");
-        reciept.appendChild(thing);
+        showScore();
     }
-    if(add === 0){
-        //create end display only first time
-        tot = document.createElement("p");
-        tot.innerText = "Total: $" + total;
-        page.appendChild(tot);
-        checkout = document.createElement("button");
-        checkout.innerText = "Checkout";
-        page.appendChild(checkout);
-        checkout.addEventListener("click", checkOut);
-    }
-    tot.innerText = "Total: $" + parseFloat(total).toFixed(2);
-    add++;
-    quan.value = "";
-    barcode.value = "";
 }
-sub.addEventListener("click", addItem);
 
-function updateDisplay(existingItem) {
-    // Find the existing display for the item
-    var existingDisplay = document.querySelector(".item p:first-child");
-
-    // Find the correct item element for the existing item
-    var itemElement = Array.from(document.querySelectorAll(".item p:first-child")).find(p => p.innerText === existingItem.name);
-
-    if (itemElement) {
-        // Update the quantity in the existing display
-        itemElement.nextElementSibling.nextElementSibling.innerText = existingItem.quan;
-    }
-    // Update the total
-    total += existingItem.price * existingItem.quan;
+function enableOptions() {
+    console.log("enable executed");
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+        option.onclick = function () {
+            checkAnswer(currentQuestionIndex, Array.from(options).indexOf(option));
+        }
+    });
 }
-var check = 0;
-function checkOut(){
-    if(check === 0){
-        //only create 1st time
-        finalTotal = document.createElement("p");
-        page.appendChild(finalTotal);
-    }
-    //update totals after 1st time
-    finalTotal.innerText = "Your grand total (including tax, 9.25%) is $" + parseFloat(total * 1.0925).toFixed(2);
-    check ++;
+
+function showScore() {
+    document.getElementById("score").textContent = `You got ${correctAnswers} correct and ${wrongAnswers} wrong out of ${correctAnswers+wrongAnswers}.`;
+    document.getElementById("score").style.display = "block";
 }
+// Load the first question when the page loads
+console.log("hi")
+loadQuestion();

@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
+    <title>Movie Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="func.js" defer></script>
 </head>
 <body>
     <div>
-        <div>
-            <h2>Which movie was released in 1983?</h2>
-            <p> Twilight </p> <p> Romeo & Juliet</p>
-            <p> The Outsiders</p> <p>Charlie's Chocolate</p>
-        </div>
+        <h2 id="q"></h2>
+        <p class="option" id="opt1" onclick="checkAnswer(0, 0)"></p>
+        <p class="option" id="opt2" onclick="checkAnswer(0, 1)"></p>
+        <br>
+        <p class="option" id="opt3" onclick="checkAnswer(0, 2)"></p>
+        <p class="option" id="opt4" onclick="checkAnswer(0, 3)"></p>
+        <h3 id="try-again" style="display: none;">That's wrong!</h3>
+        <button id="next-btn" style="display: none;" onclick="nextQuestion()">Next Question</button>
+        <h3 id="score" style="display: none;"></h3>
     </div>
 </body>
 </html>
